@@ -1,0 +1,7 @@
+/* Import Bootstrap 5 */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Import your custom styles */
+@import "custom.css";
+
+/* All @tailwind directives have been removed. */
