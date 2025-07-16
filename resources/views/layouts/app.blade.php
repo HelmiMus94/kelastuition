@@ -1,61 +1,64 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelas Sir Ameerul</title>
+    <title>Pusat Tuisyen Cemerlang</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="font-sans antialiased">
 
-    {{-- Top Yellow Bar --}}
     <div style="height: 4px; background-color: #facc15;"></div>
 
-    {{-- Navigation Bar --}}
-    {{-- Navigation Bar --}}
     <nav class="navbar navbar-expand-lg bg-white border-bottom">
         <div class="container-fluid">
-            {{-- Your Logo --}}
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('images/images.jpeg') }}" alt="Logo" style="height: 80px;">
+                <img src="{{ asset('images/images.jpeg') }}" alt="Logo" style="height: 40px;">
             </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                {{-- This pushes the nav links to the right --}}
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        {{-- We use Request::is() to check the current URL and add the 'active' class --}}
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item me-2">
                         <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="{{ route('home') }}">Utama</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item me-2">
                         <a class="nav-link {{ Request::is('kelas') ? 'active' : '' }}"
                             href="{{ route('classes') }}">Kelas</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item me-2">
                         <a class="nav-link {{ Request::is('akaun') ? 'active' : '' }}"
                             href="{{ route('account') }}">Akaun</a>
                     </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link {{ Request::is('admin*') ? 'active' : '' }}"
+                            href="{{ route('admin.kelas.index') }}">Admin</a>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}">Logout</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <a class="nav-link" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
+                                Logout
+                            </a>
+                        </form>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    {{-- Page Content Goes Here --}}
-    <main class="container mt-4">
-        @yield('content')
+    <main>
+        {{ $slot }}
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

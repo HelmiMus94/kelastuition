@@ -1,18 +1,46 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KelasController;
 
-// When a user visits the main URL ('/'), show the 'utama' view.
+/*
+|--------------------------------------------------------------------------
+| Laman Awam (Public Routes)
+|--------------------------------------------------------------------------
+|
+| Di sini kita letak semua route untuk laman yang boleh diakses oleh semua.
+|
+*/
+
 Route::view('/', 'utama')->name('home');
+Route::get('/kelas', function () {
+    $kelas = \App\Models\Kelas::all();
+    return view('kelas', compact('kelas'));
+})->name('classes');
+Route::view('/akaun', 'akaun')->name('account');
 
-// When a user visits '/kelas', show the 'kelas' view.
-Route::view('/kelas', 'kelas')->name('classes');
 
-// When a user visits '/akaun', show the 'akaun' view.
-Route::view('/akaun', 'account')->name('account');
+/*
+|--------------------------------------------------------------------------
+| Route Khas (Admin, Dashboard, etc.)
+|--------------------------------------------------------------------------
+*/
 
-// For the logout button, we'll just point it to the homepage for now.
-// Later, this will trigger a real logout action.
-Route::get('/logout', function () {
-    return redirect()->route('home');
-})->name('logout');
+// Kumpulan route untuk Admin sahaja
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::resource('kelas', KelasController::class);
+});
+
+// Route asal dari Breeze
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
